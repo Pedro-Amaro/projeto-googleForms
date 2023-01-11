@@ -8,15 +8,23 @@ import express, { request } from 'express'
 import {Role} from './models/role.entity';
 import {User} from './models/user.entity';
 import {Document} from './models/document.entity';
+
+//Controllers
 import UserController from './controllers/UserController'
+
+//Routes
+import document from './routes/document';
+import auth from './routes/auth';
+
 import session from 'express-session'
+import cors from 'cors';
 
 require('dotenv').config()
 
 const bcrypt = require("bcryptjs")
 const mysqlStore = require('express-mysql-session')(session);
 
-const PORT = 3000
+const PORT = 3001
 
 const sessionStore = new mysqlStore({
     connectionLimit: 10,
@@ -115,9 +123,6 @@ const start = async () => {
     admin, 
         {
             authenticate: async (email, password) => {
-                console.log(email);
-                console.log(password);
-
                 const userCTRL = new UserController()
                 return await userCTRL.login(email, password)
             },
@@ -137,11 +142,20 @@ const start = async () => {
             name: 'adminjs-internal-admin'
         }
     )
-    app.use(admin.options.rootPath, adminRouter)
+    app.use(cors());
+    app.use(express.json());
+
+    app.use(admin.options.rootPath, adminRouter);
+    app.use('/document', document);
+    app.use('/document', auth);
+
+    app.get('/', (req, res) => {
+        res.send('Api is running');
+    })
 
     app.listen(PORT, () => {
-    console.log(`AdminJS started on http://localhost:${PORT}${admin.options.rootPath}`)
+    console.log(`AdminJS started on http://localhost:${PORT}${admin.options.rootPath}`);
     })
 }
 
-start()
+start();
