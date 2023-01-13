@@ -1,19 +1,23 @@
 import { Grid, IconButton, Pagination, Stack, Select, MenuItem, FormControl, InputLabel  } from '@mui/material';
 import {
-    useLocation
+    useLocation,
+    useNavigate
 } from 'react-router-dom'
 import ListViewer from '../components/ListViewer/ListViewer';
 import {Edit, Delete} from '@mui/icons-material';
 import useSWR from 'swr';
-import { useState } from 'react';
+import { useState } from 'react'; 
+
 
 const fetcher = (...args) => fetch(...args).then(res => res.json())
 
 const Documents = ({setCurrentRoute}) => {
+    const navigate = useNavigate();
+
     const [page, setPage] = useState(1);
     const [limit, setLimit] = useState(5);
     const user = {
-        id:6
+        id: 6
     }
     
     const { data, error, isLoading } = useSWR(`http://localhost:3001/document?user_id=${user.id}&page${page}&limit=${limit}`, fetcher, { refreshInterval: 5000 })
@@ -21,12 +25,10 @@ const Documents = ({setCurrentRoute}) => {
     const location = useLocation();
     setCurrentRoute(location.pathname);
 
-    const editDocument = (id) => {
-        alert(`Editando documento ${id}`)
-    }
     const deleteDocument = (id) => {
         alert(`Deletando documento ${id}`)
     }
+    
 
     const columns = [
         { headerName: 'ID', key:'_id', id:true  },
@@ -36,7 +38,7 @@ const Documents = ({setCurrentRoute}) => {
         {headerName: 'Data', key:'updateAt',id:false },
         {headerName: 'Ações', action: (params) =>{
             return <>
-                <IconButton onClick={() => editDocument(params._id)} color="success" aria-label="upload picture" component="label">
+                <IconButton onClick={() => navigate(`/document/${params._id}`)} color="success" aria-label="upload picture" component="label">
                 <Edit/>
                 </IconButton>
                 <IconButton onClick={() => deleteDocument(params._id)} color="error" aria-label="upload picture" component="label">
@@ -56,7 +58,6 @@ const Documents = ({setCurrentRoute}) => {
     }
 
     const handleChange = (event, value) => {
-        
         console.log8(value)
     }
 

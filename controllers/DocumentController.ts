@@ -7,6 +7,23 @@ class DocumentController extends GenericController{
         super();
     }
 
+    async updateDocument(_id:string, data:any){
+        await Document.findByIdAndUpdate( _id, data);
+        return {
+            status: 200,
+        }
+    }
+
+    async getDocument(_id:string){
+        const document =  await Document.findById(_id);
+
+        return {
+            document,
+            status: 200,
+        }
+    }
+
+
     async getDocuments(query: any){
         let {user_id, page, limit} = query
         
@@ -14,7 +31,7 @@ class DocumentController extends GenericController{
         limit = res[0]
         page = res[1]
 
-        const document =  await Document.find({user_id}).skip(page * limit).limit(limit)
+        const document =  await Document.find({user_id}).skip(page * limit).limit(limit);
         const total = await Document.find({ user_id });
         const count = Math.ceil(total.length / limit);
 
