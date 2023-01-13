@@ -5,16 +5,22 @@ import {
 import { TextField } from '../components';
 import { Stack, Box, Grid, Typography, Button } from '@mui/material';
 import logo from '../assets/img/logo.png';
-import {useState} from 'react';
-import { register } from '../services/auth';
+import {useState, useEffect} from 'react';
+import { register, userIsLoggedIn } from '../services/auth';
 
 const Register = ({ setCurrentRoute }) => {
     const navigate = useNavigate();
     const location = useLocation();
     setCurrentRoute(location.pathname);
 
-    const [email, setEmail] = useState("")
-    const[password, setPassword] = useState("")
+    const [email, setEmail] = useState("");
+    const[password, setPassword] = useState("");
+    const[name, setName] = useState("");
+    const[username, setUsername] = useState("");
+
+    useEffect(() => {
+        userIsLoggedIn(navigate, location.pathname);
+    }, []);
 
     return <Grid container spacing={2}>
                 <Grid item xs={0} sm={4}></Grid>
@@ -31,12 +37,20 @@ const Register = ({ setCurrentRoute }) => {
                             <Typography variant="h4" component='h1' gutterBottom>Registrar</Typography>
                         </Box>
                         <TextField
-                            id={'email-register'}
+                            id={'name-register'}
                             fullWidth={true}
-                            label={'E-mail'}
-                            type={'email'}
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
+                            label={'Nome'}
+                            type={'text'}
+                            value={name}
+                            onChange={(e) => setName(e.target.value)}
+                        />
+                        <TextField
+                            id={'username-register'}
+                            fullWidth={true}
+                            label={'Usuário'}
+                            type={'text'}
+                            value={username}
+                            onChange={(e) => setUsername(e.target.value)}
                         />
                         <TextField
                             id={'password-register'}
@@ -54,8 +68,13 @@ const Register = ({ setCurrentRoute }) => {
                         <Button 
                             size={'large'}
                             variant={'contained'}
-                            onClick={() => {
-                                register(email, password)
+                            onClick={async () => {
+                                const response = await register(username,name, email, password)
+                                if(response.status === 200){
+                                    alert("Você recebeu um email de confirmação")
+                                }else if(response.data.msg){
+                                    alert(response.data.msg)
+                                }
                         }}>Registrar</Button>
                     </Stack>
                 </Grid>

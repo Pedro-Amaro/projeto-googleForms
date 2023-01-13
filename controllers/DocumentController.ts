@@ -7,6 +7,13 @@ class DocumentController extends GenericController{
         super();
     }
 
+    async deleteDocument(_id:string){
+        await Document.deleteOne({_id: _id});
+        return {
+            status:200
+        }
+    }
+
     async updateDocument(_id:string, data:any){
         await Document.findByIdAndUpdate( _id, data);
         return {
