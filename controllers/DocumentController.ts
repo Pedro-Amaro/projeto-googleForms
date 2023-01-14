@@ -8,9 +8,17 @@ class DocumentController extends GenericController{
     }
 
     async deleteDocument(_id:string){
-        await Document.deleteOne({_id: _id});
+        await Document.create({_id: _id});
         return {
             status:200
+        }
+    }
+
+    async createDocument(data: any){
+        const doc = await Document.create(data);
+        return {
+            status: 200,  
+            _id: doc.id
         }
     }
 

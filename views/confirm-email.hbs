@@ -5,8 +5,28 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <style>
+
+    </style>
 </head>
 <body>
-    Tela de confirmação de e-mail
+    <div>
+        <div>
+            <div>
+                <h3>Confirmação de e-mail</h3>
+                <h1>
+                    {{#if status }}
+                    SUCESSO
+                    {{else}}
+                    ERRO
+                    {{/if}}
+                </h1>
+            </div>
+            <h2>{{msg}}</h2>
+            {{#if status }}
+            <p>Voltar para <a href="{{url_front}}">Sistema</a> </p>
+            {{/if}}
+        </div>
+    </div>
 </body>
 </html>
